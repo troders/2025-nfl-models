@@ -89,7 +89,7 @@ if debug:
 
 # --- Week 1 Predictions
 st.markdown("---")
-st.subheader("Week 1 Predictions")
+st.subheader("Week 1 Predictions - FanDuel Lines")
 
 # Team matchups in the same order as spreads
 week1_teams = [
