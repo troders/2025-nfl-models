@@ -175,7 +175,7 @@ week1_games_dk = [
 
 week1_df_dk = pd.DataFrame(week1_games_dk)
 
-if st.button("Run Week 1 Predictions (DraftKings)"):
+if st.button("Run Week 1 Predictions - DraftKings"):
     probs = model.predict_proba(week1_df_dk[features_avg])[:, 1]
     preds = (probs >= 0.5).astype(int)
 
