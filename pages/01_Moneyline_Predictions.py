@@ -14,12 +14,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 st.title("Moneyline Model – Logistic Regression")
 
-# --- Controls
+# Controls
 debug = st.checkbox("Debug mode (print intermediate variables)")
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "datasets")
 csv_path = os.path.join(DATA_DIR, "nfl_gamelogs_vegas_2015-2024_NEW.csv")
 
-# --- Load dataset
+# Load dataset
 df = pd.read_csv(csv_path)
 
 if debug:
@@ -87,11 +87,7 @@ if debug:
     st.subheader("Confusion Matrix")
     st.write(confusion_matrix(y_test, y_pred))
 
-# --- Week 1 Predictions
-st.markdown("---")
-st.subheader("Week 1 Predictions - FanDuel Lines")
-
-# Team matchups in the same order as spreads
+# Shared team list
 week1_teams = [
     {"Home": "Eagles", "Away": "Cowboys"},
     {"Home": "Chargers", "Away": "Chiefs"},
@@ -111,7 +107,12 @@ week1_teams = [
     {"Home": "Bears", "Away": "Vikings"}
 ]
 
-week1_games = [
+# FanDuel Week 1 Predictions
+st.markdown("---")
+st.subheader("Week 1 Predictions - FanDuel Lines")
+
+
+week1_games_fd = [
     {'Spread': -8.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread':  3.0, 'Total': 45.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -6.5, 'Total': 45.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
@@ -129,22 +130,65 @@ week1_games = [
     {'Spread': -1.5, 'Total': 50.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread':  1.5, 'Total': 44.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
 ]
-week1_df = pd.DataFrame(week1_games)
+week1_df_fd = pd.DataFrame(week1_games_fd)
 
-if st.button("Run Week 1 Predictions"):
+if st.button("Run Week 1 Predictions - FanDuel"):
     probs = LogisticRegression(max_iter=1000, solver='liblinear').fit(X_train, y_train).predict_proba(week1_df[features_avg])[:, 1]
     preds = (probs >= 0.5).astype(int)
 
-    results = []
+    results_fd = []
     for i, (prob, pred) in enumerate(zip(probs, preds)):
         home = week1_teams[i]["Home"]
         away = week1_teams[i]["Away"]
         winner = home if pred == 1 else away
-        results.append({
+        results_fd.append({
             "Matchup": f"{away} @ {home}",
             "Home Win Probability": prob,
             "Predicted Winner": winner
         })
 
-    out = pd.DataFrame(results)
-    st.dataframe(out.style.format({"Home Win Probability": "{:.2%}"}))
+    out_fd = pd.DataFrame(results_fd)
+    st.dataframe(out_fd.style.format({"Home Win Probability": "{:.2%}"}))
+
+# DraftKings Week 1 Predictions
+st.markdown("---")
+st.subheader("Week 1 Predictions - DraftKings Lines")
+
+week1_games_dk = [
+    {'Spread': -8.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  3.0, 'Total': 45.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -6.0, 'Total': 45.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -3.5, 'Total': 46.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  3.0, 'Total': 38.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -2.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  6.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  5.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -1.5, 'Total': 46.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  2.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -7.5, 'Total': 42.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  2.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -2.5, 'Total': 46.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -2.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -1.5, 'Total': 50.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  1.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    ]
+
+week1_df_dk = pd.DataFrame(week1_games_dk)
+
+if st.button("Run Week 1 Predictions (DraftKings)"):
+    probs = model.predict_proba(week1_df_dk[features_avg])[:, 1]
+    preds = (probs >= 0.5).astype(int)
+
+    results_dk = []
+    for i, (prob, pred) in enumerate(zip(probs, preds)):
+        home = week1_teams[i]["Home"]
+        away = week1_teams[i]["Away"]
+        winner = home if pred == 1 else away
+        results_dk.append({
+            "Matchup": f"{away} @ {home}",
+            "Home Win Probability": prob,
+            "Predicted Winner": winner
+        })
+
+    out_dk = pd.DataFrame(results_dk)
+    st.dataframe(out_dk.style.format({"Home Win Probability": "{:.2%}"}))
