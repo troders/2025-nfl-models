@@ -133,7 +133,7 @@ week1_games_fd = [
 week1_df_fd = pd.DataFrame(week1_games_fd)
 
 if st.button("Run Week 1 Predictions - FanDuel"):
-    probs = LogisticRegression(max_iter=1000, solver='liblinear').fit(X_train, y_train).predict_proba(week1_df[features_avg])[:, 1]
+    probs = model.predict_proba(week1_df_fd[features_avg])[:, 1]
     preds = (probs >= 0.5).astype(int)
 
     results_fd = []
