@@ -113,22 +113,22 @@ st.subheader("Week 1 Predictions - FanDuel Lines")
 
 
 week1_games_fd = [
-    {'Spread': -8.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread':  3.0, 'Total': 45.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -8.5, 'Total': 48.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  3.0, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -6.5, 'Total': 45.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -3.5, 'Total': 46.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread':  2.5, 'Total': 38.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  2.5, 'Total': 37.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -2.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread':  6.5, 'Total': 42.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread':  5.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -1.5, 'Total': 46.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread':  2.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread': -7.5, 'Total': 42.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread':  2.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  1.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -8.5, 'Total': 42.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  1.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -2.5, 'Total': 47.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread': -3.0, 'Total': 44.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread': -3.0, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
     {'Spread': -1.5, 'Total': 50.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
-    {'Spread':  1.5, 'Total': 44.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
+    {'Spread':  1.5, 'Total': 43.5, 'Home': 1, **{f'{c}_avg': df[c].mean() for c in stat_cols}},
 ]
 week1_df_fd = pd.DataFrame(week1_games_fd)
 
