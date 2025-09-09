@@ -13,11 +13,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
 
 st.title("Moneyline Model – Logistic Regression")
+st.markdown("**Week 1 Record:** 14–2 ✅")
 
 # Controls
 debug = st.checkbox("Debug mode (print intermediate variables)")
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "datasets")
-csv_path = os.path.join(DATA_DIR, "nfl_gamelogs_vegas_2015-2024_NEW.csv")
+csv_path = os.path.join(DATA_DIR, "nfl_gamelogs_vegas_2015-2025_FINAL.csv")
 
 # Load dataset
 df = pd.read_csv(csv_path)

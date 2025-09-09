@@ -9,6 +9,7 @@ import pandas as pd
 import os
 
 st.title("FanDuel NFL Over/Under Predictions")
+st.markdown("**Week 1 Record:** 9–7 ✅")
 
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
 
