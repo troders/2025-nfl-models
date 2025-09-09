@@ -1,5 +1,6 @@
 # fetch_and_train.py
 import os
+os.environ["NFLFASTPY_DISABLE_HEADSHOTS"] = "1"
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import joblib
