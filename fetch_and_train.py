@@ -18,7 +18,8 @@ if not os.path.exists(DATA_FILE):
 df = pd.read_csv(DATA_FILE)
 
 # Just check for the columns we actually need
-required_cols = ["Season", "Week", "Date", "Spread", "Total", "Home", "Win"]
+required_cols = ["Season", "Week", "Date", "Team", "Opponent", 
+                 "Spread", "Total", "Home", "Win"]
 for c in required_cols:
     if c not in df.columns:
         raise ValueError(f"Column {c} missing in dataset!")
