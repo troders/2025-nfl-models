@@ -12,14 +12,13 @@ MODEL_FILE = "nfl_model.pkl"
 
 # -------------------------------
 # Load Existing Dataset
-if os.path.exists(DATA_FILE):
-    df = pd.read_csv(DATA_FILE)
-else:
+if not os.path.exists(DATA_FILE):
     raise FileNotFoundError(f"Dataset {DATA_FILE} not found!")
 
-# Ensure necessary columns exist
-required_cols = ["Season", "Week", "Date", "Team", "Opponent",
-                 "Spread", "Total", "Home", "Win"]
+df = pd.read_csv(DATA_FILE)
+
+# Just check for the columns we actually need
+required_cols = ["Season", "Week", "Date", "Spread", "Total", "Home", "Win"]
 for c in required_cols:
     if c not in df.columns:
         raise ValueError(f"Column {c} missing in dataset!")
@@ -27,17 +26,15 @@ for c in required_cols:
 # -------------------------------
 # Get current week / last completed week
 today = datetime.now(timezone.utc)
-season_start = datetime(2025, 9, 4, tzinfo=timezone.utc)  # first Thu of NFL season
+season_start = datetime(2025, 9, 4, tzinfo=timezone.utc)  # NFL 2025 kickoff
 days_since_start = (today - season_start).days
 current_week = max(1, days_since_start // 7 + 1)
-
-# Corrected line ✅
 last_completed_week = current_week - 1
 
-print(f"📅 Today={today}, Current week = {current_week}, Last completed = {last_completed_week}")
+print(f"📅 Today={today}, Current={current_week}, LastCompleted={last_completed_week}")
 
 # -------------------------------
-# Train Model
+# Train Model on cleaned data
 df_clean = df.dropna(subset=["Spread", "Total", "Home", "Win"])
 X = df_clean[["Spread", "Total", "Home"]]
 y = df_clean["Win"]
@@ -50,18 +47,18 @@ joblib.dump(model, MODEL_FILE)
 print(f"✅ Model retrained and saved to {MODEL_FILE}")
 
 # -------------------------------
-# Evaluate last week’s accuracy
+# Evaluate last completed week
 if last_completed_week > 0:
     df_last = df_clean[df_clean["Week"] == last_completed_week]
     if len(df_last) > 0:
-        Xw = df_last[["Spread", "Total", "Home"]]
-        yw = df_last["Win"]
-        preds = model.predict(Xw)
+        X_last = df_last[["Spread", "Total", "Home"]]
+        y_last = df_last["Win"]
 
-        correct = (preds == yw).sum()
-        total = len(yw)
+        preds = model.predict(X_last)
+        correct = (preds == y_last).sum()
+        total = len(y_last)
         record = f"{correct}-{total - correct}"
 
         print(f"📊 Last Week (Week {last_completed_week}) record: {record}")
     else:
-        print(f"ℹ️ No rows for Week {last_completed_week} yet.")
+        print(f"ℹ️ No rows found for Week {last_completed_week}.")
