@@ -1,30 +1,36 @@
 # fetch_and_train.py
+import os
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import joblib
-import os
+from datetime import datetime, timezone
 
+# -------------------------------
 # Paths
-DATA_PATH = os.path.join("datasets", "nfl_gamelogs_vegas_2015-2025_FINAL.csv")
-MODEL_PATH = "nfl_model.pkl"
+DATA_FILE = os.path.join("datasets", "nfl_gamelogs_vegas_2015-2025_FINAL.csv")
+MODEL_FILE = "nfl_model.pkl"
 
-print("📂 Loading dataset:", DATA_PATH)
-df = pd.read_csv(DATA_PATH)
+# -------------------------------
+# Step 1: Load Existing Dataset
+if os.path.exists(DATA_FILE):
+    df = pd.read_csv(DATA_FILE)
+else:
+    raise FileNotFoundError(f"Dataset {DATA_FILE} not found!")
 
-# Keep only rows with needed features + target
-required_cols = ["Spread", "Total", "Home", "Win"]
-df = df.dropna(subset=required_cols)
+# Ensure necessary columns exist
+required_cols = ["Season", "Week", "Date", "Team", "Opponent",
+                 "Spread", "Total", "Home", "Win"]
+for c in required_cols:
+    if c not in df.columns:
+        raise ValueError(f"Column {c} is missing in dataset. Check format!")
 
-# Features & target
-X = df[["Spread", "Total", "Home"]]
-y = df["Win"]   # already binary: 1=win, 0=lose
+# -------------------------------
+# Step 2: Check if we need to append new week results
+# (Here we just trust the dataset gets updated manually by weekly data collection,
+# but if you want real pull, you could integrate NFLVerse API here.)
 
-print(f"✅ Training dataset shape: X={X.shape}, y={y.shape}")
-
-# Train simple Logistic Regression
-model = LogisticRegression(max_iter=1000, solver="liblinear")
-model.fit(X, y)
-
-# Save model to repo root
-joblib.dump(model, MODEL_PATH)
-print(f"✅ Model trained & saved to {MODEL_PATH}")
+today = datetime.now(timezone.utc)
+season_start = datetime(2025, 9, 4, tzinfo=timezone.utc)  # adjust NFL kickoff
+days_since_start = (today - season_start).days
+current_week = max(1, days_since_start // 7 + 1)
+last_completed_week = current_week -
