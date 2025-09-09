@@ -1,30 +1,30 @@
 # fetch_and_train.py
-import nflfastpy
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 import joblib
+import os
 
-# Step 1: Load most recent NFL season data (adjust year as needed)
-season = 2025
-schedule = nflfastpy.load_schedule([season])
+# Paths
+DATA_PATH = os.path.join("datasets", "nfl_gamelogs_vegas_2015-2025_FINAL.csv")
+MODEL_PATH = "nfl_model.pkl"
 
-# Step 2: Make sure spreads are available
-df = schedule[["week", "home_team", "away_team", "spread_line", "total_line", "result"]].copy()
+print("📂 Loading dataset:", DATA_PATH)
+df = pd.read_csv(DATA_PATH)
 
-# Small cleanup: spread_line can be NaN for future games
-df = df.dropna(subset=["spread_line", "result"])
+# Keep only rows with needed features + target
+required_cols = ["Spread", "Total", "Home", "Win"]
+df = df.dropna(subset=required_cols)
 
-# Step 3: Very simple model: predict win/loss using spread only
-df["home_win"] = (df["result"] > 0).astype(int)
+# Features & target
+X = df[["Spread", "Total", "Home"]]
+y = df["Win"]   # already binary: 1=win, 0=lose
 
-X = df[["spread_line"]]  # features (could add more later)
-y = df["home_win"]       # target
+print(f"✅ Training dataset shape: X={X.shape}, y={y.shape}")
 
-# Step 4: Train model
-model = RandomForestClassifier()
+# Train simple Logistic Regression
+model = LogisticRegression(max_iter=1000, solver="liblinear")
 model.fit(X, y)
 
-# Step 5: Save it so Streamlit app can load it
-joblib.dump(model, "nfl_model.pkl")
-
-print("✅ Model updated and saved as nfl_model.pkl")
+# Save model to repo root
+joblib.dump(model, MODEL_PATH)
+print(f"✅ Model trained & saved to {MODEL_PATH}")
