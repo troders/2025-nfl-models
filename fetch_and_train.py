@@ -60,4 +60,8 @@ if last_completed_week > 0:
 
         correct = (preds == yw).sum()
         total = len(yw)
-        record =
+        record = f"{correct}-{total - correct}"
+
+        print(f"📊 Last Week (Week {last_completed_week}) record: {record}")
+    else:
+        print(f"ℹ️ No rows for Week {last_completed_week} yet.")
