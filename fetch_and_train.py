@@ -1,12 +1,12 @@
 # fetch_and_train.py
 import os
-os.environ["NFLFASTPY_DISABLE_HEADSHOTS"] = "1"
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import joblib
 from datetime import datetime, timezone
-import nflfastpy
+from nflfastpy.schedule import load_schedule   # ✅ only import what we need
 
+# -------------------------------
 DATA_FILE = os.path.join("datasets", "nfl_gamelogs_vegas_2015-2025_FINAL.csv")
 MODEL_FILE = "nfl_model.pkl"
 
@@ -16,7 +16,6 @@ if not os.path.exists(DATA_FILE):
     raise FileNotFoundError(f"CSV missing: {DATA_FILE}")
 
 df = pd.read_csv(DATA_FILE)
-
 required_cols = ["Season","Week","Date","Team","Opp","Home","Win","Spread","Total"]
 for c in required_cols:
     if c not in df.columns:
@@ -25,13 +24,12 @@ for c in required_cols:
 print(f"📂 Loaded {DATA_FILE}, shape={df.shape}")
 
 # -------------------------------
-# 2. Pull schedule/results from NFLVerse
+# 2. Pull updated schedule/results
 this_season = 2025
-schedule = nflfastpy.load_schedule([this_season])
+schedule = load_schedule([this_season])   # ✅ no headshot bug here
 
 rows = []
 for _, g in schedule.iterrows():
-    # Only finished games
     if pd.isna(g["home_score"]) or pd.isna(g["away_score"]):
         continue
 
@@ -66,20 +64,18 @@ for _, g in schedule.iterrows():
 df_new = pd.DataFrame(rows)
 
 # -------------------------------
-# 3. Merge into existing CSV, avoid duplicates
+# 3. Merge safely into existing CSV
 before = len(df)
 df = pd.concat([df, df_new], ignore_index=True)
 df = df.drop_duplicates(subset=["Season","Week","Team"], keep="last")
 after = len(df)
 
-added = after - before
-print(f"🆕 Added {added} new rows, total {after}")
-
+print(f"🆕 Added {after-before} new rows. Total records: {after}")
 df.to_csv(DATA_FILE, index=False)
-print(f"💾 Updated CSV written to {DATA_FILE}")
+print(f"💾 Saved updated CSV to {DATA_FILE}")
 
 # -------------------------------
-# 4. Train Logistic Regression
+# 4. Train model
 df_train = df.dropna(subset=["Spread","Total","Home","Win"])
 X = df_train[["Spread","Total","Home"]]
 y = df_train["Win"]
@@ -88,10 +84,10 @@ model = LogisticRegression(max_iter=1000, solver="liblinear")
 model.fit(X,y)
 
 joblib.dump(model, MODEL_FILE)
-print(f"✅ Trained + saved model at {MODEL_FILE}")
+print(f"✅ Model trained & saved as {MODEL_FILE}")
 
 # -------------------------------
-# 5. Show last completed week record
+# 5. Weekly record logging
 today = datetime.now(timezone.utc)
 season_start = datetime(2025,9,4,tzinfo=timezone.utc)
 days_since = (today - season_start).days
