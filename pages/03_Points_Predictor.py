@@ -24,14 +24,14 @@ df["Total_Points_Scored"] = df["Tm_Pts"] + df["Opp_Pts"]
 df = df.sort_values(by=["Team", "Season", "Week"])
 
 # 3. Select Features
-features_early = ["Season", "Week", "Home", "Team", "Opp_x", "Spread", "Total"]
+features_early = ["Season", "Week", "Home", "Team", "Opp", "Spread", "Total"]
 target_early = "Tm_Pts"
 
 X_early = df[features_early]
 y_early = df[target_early]
 
-# 4. Preprocessing: One-hot encode 'Team' and 'Opp_x'
-categorical_early = ["Team", "Opp_x"]
+# 4. Preprocessing: One-hot encode 'Team' and 'Opp'
+categorical_early = ["Team", "Opp"]
 numerical_early = ["Season", "Week", "Home", "Spread", "Total"]
 
 preprocessor_early = ColumnTransformer(
@@ -66,7 +66,7 @@ def predict_week_points_early(games):
     input_processed = preprocessor_early.transform(input_df)
     predictions = model_early.predict(input_processed)
     input_df["Predicted_Points"] = predictions
-    input_df = input_df.rename(columns={"Opp_x": "Opponent"})
+    input_df = input_df.rename(columns={"Opp": "Opponent"})
     # Format spread/total
     input_df["Spread"] = input_df["Spread"].map(lambda x: f"{x:.1f}")
     input_df["Total"] = input_df["Total"].map(lambda x: f"{x:.1f}")
@@ -74,104 +74,104 @@ def predict_week_points_early(games):
 
 # Week 1 Games (FanDuel)
 week1_games_fd = [
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "PHI", "Opp_x": "DAL", "Spread": -8.5, "Total": 48.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DAL", "Opp_x": "PHI", "Spread":  8.5, "Total": 48.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "PHI", "Opp": "DAL", "Spread": -8.5, "Total": 48.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DAL", "Opp": "PHI", "Spread":  8.5, "Total": 48.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "LAC", "Opp_x": "KAN", "Spread":  3.0, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "KAN", "Opp_x": "LAC", "Spread": -3.0, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "LAC", "Opp": "KAN", "Spread":  3.0, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "KAN", "Opp": "LAC", "Spread": -3.0, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "WAS", "Opp_x": "NYG", "Spread": -6.5, "Total": 45.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "NYG", "Opp_x": "WAS", "Spread":  6.5, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "WAS", "Opp": "NYG", "Spread": -6.5, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "NYG", "Opp": "WAS", "Spread":  6.5, "Total": 45.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "JAX", "Opp_x": "CAR", "Spread": -4.5, "Total": 46.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CAR", "Opp_x": "JAX", "Spread":  4.5, "Total": 46.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "JAX", "Opp": "CAR", "Spread": -4.5, "Total": 46.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CAR", "Opp": "JAX", "Spread":  4.5, "Total": 46.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NYJ", "Opp_x": "PIT", "Spread":  3.0, "Total": 37.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "PIT", "Opp_x": "NYJ", "Spread": -3.0, "Total": 37.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NYJ", "Opp": "PIT", "Spread":  3.0, "Total": 37.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "PIT", "Opp": "NYJ", "Spread": -3.0, "Total": 37.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NWE", "Opp_x": "RAI", "Spread": -2.5, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAI", "Opp_x": "NWE", "Spread":  2.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NWE", "Opp": "RAI", "Spread": -2.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAI", "Opp": "NWE", "Spread":  2.5, "Total": 43.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NOR", "Opp_x": "CRD", "Spread":  6.5, "Total": 44.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CRD", "Opp_x": "NOR", "Spread": -6.5, "Total": 44.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NOR", "Opp": "CRD", "Spread":  6.5, "Total": 44.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CRD", "Opp": "NOR", "Spread": -6.5, "Total": 44.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLE", "Opp_x": "CIN", "Spread":  4.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CIN", "Opp_x": "CLE", "Spread": -4.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLE", "Opp": "CIN", "Spread":  4.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CIN", "Opp": "CLE", "Spread": -4.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLT", "Opp_x": "MIA", "Spread": -1.5, "Total": 46.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIA", "Opp_x": "CLT", "Spread":  1.5, "Total": 46.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLT", "Opp": "MIA", "Spread": -1.5, "Total": 46.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIA", "Opp": "CLT", "Spread":  1.5, "Total": 46.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "ATL", "Opp_x": "TAM", "Spread":  1.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "TAM", "Opp_x": "ATL", "Spread": -1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "ATL", "Opp": "TAM", "Spread":  1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "TAM", "Opp": "ATL", "Spread": -1.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "DEN", "Opp_x": "OTI", "Spread": -8.5, "Total": 42.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "OTI", "Opp_x": "DEN", "Spread":  8.5, "Total": 42.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "DEN", "Opp": "OTI", "Spread": -8.5, "Total": 42.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "OTI", "Opp": "DEN", "Spread":  8.5, "Total": 42.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "SEA", "Opp_x": "SFO", "Spread":  1.5, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "SFO", "Opp_x": "SEA", "Spread": -1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "SEA", "Opp": "SFO", "Spread":  1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "SFO", "Opp": "SEA", "Spread": -1.5, "Total": 43.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "GNB", "Opp_x": "DET", "Spread": -1.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DET", "Opp_x": "GNB", "Spread":  1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "GNB", "Opp": "DET", "Spread": -1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DET", "Opp": "GNB", "Spread":  1.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "RAM", "Opp_x": "HTX", "Spread": -3.0, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "HTX", "Opp_x": "RAM", "Spread":  3.0, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "RAM", "Opp": "HTX", "Spread": -3.0, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "HTX", "Opp": "RAM", "Spread":  3.0, "Total": 43.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "BUF", "Opp_x": "RAV", "Spread": -1.5, "Total": 50.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAV", "Opp_x": "BUF", "Spread":  1.5, "Total": 50.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "BUF", "Opp": "RAV", "Spread": -1.5, "Total": 50.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAV", "Opp": "BUF", "Spread":  1.5, "Total": 50.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CHI", "Opp_x": "MIN", "Spread":  1.5, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIN", "Opp_x": "CHI", "Spread": -1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CHI", "Opp": "MIN", "Spread":  1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIN", "Opp": "CHI", "Spread": -1.5, "Total": 43.5},
 ]
 
 # Week 1 Games (DraftKings)
 week1_games_dk = [
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "PHI", "Opp_x": "DAL", "Spread": -8.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DAL", "Opp_x": "PHI", "Spread":  8.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "PHI", "Opp": "DAL", "Spread": -8.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DAL", "Opp": "PHI", "Spread":  8.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "LAC", "Opp_x": "KAN", "Spread":  3.0, "Total": 45.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "KAN", "Opp_x": "LAC", "Spread": -3.0, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "LAC", "Opp": "KAN", "Spread":  3.0, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "KAN", "Opp": "LAC", "Spread": -3.0, "Total": 45.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "WAS", "Opp_x": "NYG", "Spread": -6.0, "Total": 45.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "NYG", "Opp_x": "WAS", "Spread":  6.0, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "WAS", "Opp": "NYG", "Spread": -6.0, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "NYG", "Opp": "WAS", "Spread":  6.0, "Total": 45.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "JAX", "Opp_x": "CAR", "Spread": -4.5, "Total": 45.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CAR", "Opp_x": "JAX", "Spread":  4.5, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "JAX", "Opp": "CAR", "Spread": -4.5, "Total": 45.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CAR", "Opp": "JAX", "Spread":  4.5, "Total": 45.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NYJ", "Opp_x": "PIT", "Spread":  3.0, "Total": 37.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "PIT", "Opp_x": "NYJ", "Spread": -3.0, "Total": 37.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NYJ", "Opp": "PIT", "Spread":  3.0, "Total": 37.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "PIT", "Opp": "NYJ", "Spread": -3.0, "Total": 37.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NWE", "Opp_x": "RAI", "Spread": -2.5, "Total": 44.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAI", "Opp_x": "NWE", "Spread":  2.5, "Total": 44.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NWE", "Opp": "RAI", "Spread": -2.5, "Total": 44.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAI", "Opp": "NWE", "Spread":  2.5, "Total": 44.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NOR", "Opp_x": "CRD", "Spread":  6.0, "Total": 44.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CRD", "Opp_x": "NOR", "Spread": -6.0, "Total": 44.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "NOR", "Opp": "CRD", "Spread":  6.0, "Total": 44.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CRD", "Opp": "NOR", "Spread": -6.0, "Total": 44.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLE", "Opp_x": "CIN", "Spread":  5.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CIN", "Opp_x": "CLE", "Spread": -5.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLE", "Opp": "CIN", "Spread":  5.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "CIN", "Opp": "CLE", "Spread": -5.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLT", "Opp_x": "MIA", "Spread": -1.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIA", "Opp_x": "CLT", "Spread":  1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CLT", "Opp": "MIA", "Spread": -1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIA", "Opp": "CLT", "Spread":  1.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "ATL", "Opp_x": "TAM", "Spread":  1.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "TAM", "Opp_x": "ATL", "Spread": -1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "ATL", "Opp": "TAM", "Spread":  1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "TAM", "Opp": "ATL", "Spread": -1.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "DEN", "Opp_x": "OTI", "Spread": -8.5, "Total": 42.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "OTI", "Opp_x": "DEN", "Spread":  8.5, "Total": 42.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "DEN", "Opp": "OTI", "Spread": -8.5, "Total": 42.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "OTI", "Opp": "DEN", "Spread":  8.5, "Total": 42.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "SEA", "Opp_x": "SFO", "Spread":  1.5, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "SFO", "Opp_x": "SEA", "Spread": -1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "SEA", "Opp": "SFO", "Spread":  1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "SFO", "Opp": "SEA", "Spread": -1.5, "Total": 43.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "GNB", "Opp_x": "DET", "Spread": -1.5, "Total": 47.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DET", "Opp_x": "GNB", "Spread":  1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "GNB", "Opp": "DET", "Spread": -1.5, "Total": 47.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "DET", "Opp": "GNB", "Spread":  1.5, "Total": 47.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "RAM", "Opp_x": "HTX", "Spread": -3.0, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "HTX", "Opp_x": "RAM", "Spread":  3.0, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "RAM", "Opp": "HTX", "Spread": -3.0, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "HTX", "Opp": "RAM", "Spread":  3.0, "Total": 43.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "BUF", "Opp_x": "RAV", "Spread": -1.5, "Total": 50.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAV", "Opp_x": "BUF", "Spread":  1.5, "Total": 50.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "BUF", "Opp": "RAV", "Spread": -1.5, "Total": 50.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "RAV", "Opp": "BUF", "Spread":  1.5, "Total": 50.5},
 
-    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CHI", "Opp_x": "MIN", "Spread":  1.5, "Total": 43.5},
-    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIN", "Opp_x": "CHI", "Spread": -1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 1, "Team": "CHI", "Opp": "MIN", "Spread":  1.5, "Total": 43.5},
+    {"Season": 2025, "Week": 1, "Home": 0, "Team": "MIN", "Opp": "CHI", "Spread": -1.5, "Total": 43.5},
 ]
 
 # --- FanDuel Predictions
